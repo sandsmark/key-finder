@@ -4,7 +4,7 @@
 #include <cmath>
 
 #define MIN_LENGTH 11
-#define MAX_LENGTH 32
+#define MAX_LENGTH 40
 
 struct BucketMap {
     constexpr BucketMap() : map{}, revmap{} {
@@ -196,11 +196,14 @@ static bool startsWith(const std::string &string, const char *needle)
 
 void handleCandidate(const std::string &buffer)
 {
-    //printf("\t%s:\t%f\t%f\t%f\t%f\n", buffer.c_str(), entropy(buffer), keyEntropy(buffer), bigramEntropy(buffer), caseEntropy(buffer));
+    //if (startsWith(buffer, "AIza")) {
+    //    puts(buffer.c_str());
+    //    return;
+    //}
     if (startsWith(buffer, "kExpr")) {
         return;
     }
-    if (startsWith(buffer, "X64I64x") || startsWith(buffer, "X64I32x") || startsWith(buffer, "X64I16x")) {
+    if (startsWith(buffer, "X64I64x") || startsWith(buffer, "X64I32x") || startsWith(buffer, "X64I16x") || startsWith(buffer, "X64S16x") || startsWith(buffer, "X64S8x16")) {
         return;
     }
     if (startsWith(buffer, "0123456789")) {
@@ -209,7 +212,9 @@ void handleCandidate(const std::string &buffer)
     double switches;
     const double cent = caseEntropy(buffer, &switches);
     const double kent = keyEntropy(buffer);
-    if (cent > 1.3 && kent > 3.8 && switches < 0.4) {
+    //printf("\t%s:\t%f\t%f\t%f\t%f\n", buffer.c_str(), entropy(buffer), keyEntropy(buffer), bigramEntropy(buffer), caseEntropy(buffer, &switches));
+        //printf("\t%s: %f %f %f\n", buffer.c_str(), cent, kent, switches);
+    if (startsWith(buffer, "AIza") || (cent > 1.28 && kent > 3.8 && switches < 0.45)) {
         printf("%s: %f %f %f\n", buffer.c_str(), cent, kent, switches);
         //printf("%s\n", buffer.c_str());
     }
@@ -240,7 +245,7 @@ void readFile(FILE *file)
         }
         buffer.push_back(c);
     }
-    printf("%lu bytes read\n", pos);
+    printf("%ld bytes read\n", ftell(file));
 
     puts("Done.");
 }
